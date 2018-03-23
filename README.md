@@ -24,3 +24,5 @@ En el fichero conf.php están la lista de variables a configurar, todos los valo
 En la variable $ se debe de poner la ubicación de la clave criptográfica ce hacienda, recomendamos que no sea en un directorio público del servidor.
 
 La URL del fichero "api-textplain.php" es a la que se debe enviar el CSV vía post.
+
+Firmadohaciendacr.php tomado de https://github.com/CRLibre/API_Hacienda/blob/master/api/contrib/signXML/Firmadohaciendacr.php del repositorio de CRLibre.
