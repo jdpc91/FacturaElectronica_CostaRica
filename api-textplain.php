@@ -105,7 +105,7 @@ $fac = new Firmadocr();
 $fac->firmar($p12Url, $pinP12,$inXmlUrl,$outXmlUrl );
 $docxml = file_get_contents($outXmlUrl);
 $xmlFMD = base64_encode($docxml);
-$token = getToken();
+$token = getToken($username, $password);
 $jsonData = array(
     "clave" => $myArray['Clave'],
   "fecha" => $myArray['FechaEmision'],
