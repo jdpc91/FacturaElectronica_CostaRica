@@ -20,7 +20,7 @@ Se debe de respetar el orden de los campos.
 
 Configuración
 
-En el fichero conf.php están la lista de variables a configurar, todos los valores deben ser modificados según necesidad del obligado tributario.
+En el fichero conf.php esta la lista de variables a configurar, todos los valores deben ser modificados según necesidad del obligado tributario.
 
 La URL del fichero "api-textplain.php" es a la que se debe enviar el CSV vía post.
 
