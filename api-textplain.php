@@ -94,13 +94,13 @@ $myArray = array(
 );
 $xmltext = array_to_xml($myArray);
 $source = '<?xml version="1.0" encoding="utf-8"?><FacturaElectronica xmlns="https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" targetNamespace="https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica">'.$xmltext.'</FacturaElectronica>';
-$inXmlUrl = 'xml/'.$myArray['Clave'].'.xml';
+$inXmlUrl = $inPath.$myArray['Clave'].'.xml';
 $xml = fopen($inXmlUrl,"w+");
 $source = utf8_encode($source);
 fwrite($xml, $source);
 fclose($xml);
 $docxml = file_get_contents($inXmlUrl);
-$outXmlUrl = 'xml/'.$myArray['Clave'].'FMD.xml';
+$outXmlUrl = $outPath.$myArray['Clave'].'FMD.xml';
 $fac = new Firmadocr();
 $fac->firmar($p12Url, $pinP12,$inXmlUrl,$outXmlUrl );
 $docxml = file_get_contents($outXmlUrl);
