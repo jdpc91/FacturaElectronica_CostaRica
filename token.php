@@ -1,6 +1,6 @@
 <?php 
 include 'conf.php';
-function getToken(){
+function getToken($username, $password){
 	$url = 'https://idp.comprobanteselectronicos.go.cr/auth/realms/rut-stag/protocol/openid-connect/token';
 	$data = array('client_id' => 'api-stag',
 	              'client_secret' => '',
