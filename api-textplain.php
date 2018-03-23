@@ -1,9 +1,4 @@
 <?php 
-require_once 'vendor/autoload.php';
-use JsonSchema\SchemaStorage;
-use JsonSchema\Validator;
-use JsonSchema\Constraints\Factory;
-use JsonSchema\Constraints\Constraint;
 include 'token.php';
 include 'Firmadohaciendacr.php';
 include 'config.php';
@@ -36,9 +31,9 @@ foreach ($csv as $key => $value) {
 				'UnidadMedida' => 'Sp',
 				'Detalle' => $value[2],
 				'PrecioUnitario' => round($value[3], 5),
-				'MontoTotal' => round($value[3], 5),
-				'SubTotal' => round($value[3], 5),
-				'MontoTotalLinea' => round($value[3], 5),
+				'MontoTotal' => round($value[3]*$value[1], 5),
+				'SubTotal' => round($value[3]*$value[1], 5),
+				'MontoTotalLinea' => round($value[3]*$value[1], 5),
 			)
 		);
 	}
@@ -49,7 +44,7 @@ $TipoComprobante = "01";
 $numDocumento = str_pad($csv[0][0], 10, "0", STR_PAD_LEFT);
 $NumeroConsecutivo = $casaMatriz.$terminal.$TipoComprobante.$numDocumento;
 $fechaClave = date('dmy');
-$cedulaClave = str_pad('114760094', 12, "0", STR_PAD_LEFT);
+$cedulaClave = str_pad($NumeroID, 12, "0", STR_PAD_LEFT);
 $situacionComprobante = "1";
 $seg = (string)rand(1,99999999);
 $numSeguridad = str_pad($seg, 8, "0", STR_PAD_LEFT);
@@ -63,31 +58,31 @@ $myArray = array(
 	'NumeroConsecutivo' => $NumeroConsecutivo,        
 	'FechaEmision' => date('c'),
 	'Emisor' => array(
-		'Nombre' => 'José Daniel Pérez Castañeda',
+		'Nombre' => $Nombre,
 		'Identificacion' => array(
-			'Tipo' => "01",
-			'Numero' => '114760094' ,
+			'Tipo' => $TipoID,
+			'Numero' => $NumeroID ,
 		),
-		'NombreComercial' => 'redaBits',
+		'NombreComercial' => $NombreComercial,
 		'Ubicacion' => array(
-			'Provincia' => '1',
-			'Canton' => '08',
-			'Distrito' => '05',
-			'Barrio' => '12',
-			'OtrasSenas' => 'Calle Fresas, Casa 250',
+			'Provincia' => $Provincia,
+			'Canton' => $Canton,
+			'Distrito' => $Distrito,
+			'Barrio' => $Barrio,
+			'OtrasSenas' => $OtrasSenas,
 		),
 		'Telefono' => array(
-			'CodigoPais' => 506,
-			'NumTelefono' =>  86237548,
+			'CodigoPais' => $CodigoPais,
+			'NumTelefono' =>  $NumTelefono,
 		),
-		'CorreoElectronico' => 'jdpc91@gmail.com',
+		'CorreoElectronico' => $CorreoElectronico,
 	),	
 	'CondicionVenta' => '01',
 	'MedioPago' => '01',
 	'DetalleServicio' => $DetalleServicio,		
 	'ResumenFactura' => array(
-		'CodigoMoneda' => 'USD',
-		'TipoCambio' => round(562.5, 5),
+		'CodigoMoneda' => $CodigoMoneda,
+		'TipoCambio' => round($TipoCambio, 5),
 		'TotalVenta' => $TotalComprobante,
 		'TotalVentaNeta' => $TotalComprobante,
 		'TotalComprobante' => $TotalComprobante,
@@ -105,8 +100,6 @@ $source = utf8_encode($source);
 fwrite($xml, $source);
 fclose($xml);
 $docxml = file_get_contents($inXmlUrl);
-//$cmd = 'java -jar /opt/FirmaXadesEpes-master/compilado/firmar-xades.jar /opt/bitnami/apache2/conf/011476009414.p12 2312 '.$file.' /opt/bitnami/apache2/htdocs/facturaElectronica/xml/'.$myArray['Clave'].'FMD.xml';
-//$rest = exec($cmd);
 $outXmlUrl = 'xml/'.$myArray['Clave'].'FMD.xml';
 $fac = new Firmadocr();
 $fac->firmar($p12Url, $pinP12,$inXmlUrl,$outXmlUrl );
@@ -122,11 +115,6 @@ $jsonData = array(
   "comprobanteXml" => $xmlFMD
 );
 $jsonDataEncoded = json_encode($jsonData);
-$validator2 = new JsonSchema\Validator;
-$validator2->coerce(json_decode($jsonDataEncoded), (object)['$ref' => 'file://' . realpath('schemaRequest.json')]);
-if (!$validator2->isValid()) {
-    die("Formato no valido");
-}
 $curl = curl_init(); 
 curl_setopt($curl, CURLOPT_POST, 1);
 curl_setopt_array($curl, array(
